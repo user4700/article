@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶管理系統</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>用戶管理系統</h1>
+        <nav class="d-flex justify-content-center mt-3">
+            <button id="register-btn" class="btn btn-light mx-2">註冊</button>
+            <button id="login-btn" class="btn btn-light mx-2">登入</button>
+            <button id="history-btn" class="btn btn-light mx-2">我的紀錄</button>
+            <button id="home-btn" class="btn btn-light mx-2">首頁</button>
+        </nav>
+    </header>
+    <main class="container my-4">
+        <!-- 註冊區 -->
+        <section id="register-section" class="d-none">
+            <h2>註冊</h2>
+            <form id="register-form" class="mb-3">
+                <div class="mb-3">
+                    <label for="email" class="form-label">信箱：</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密碼：</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">註冊</button>
+            </form>
+            <div id="register-message" class="text-danger"></div>
+        </section>
+
+        <!-- 登入區 -->
+        <section id="login-section" class="d-none">
+            <h2>登入</h2>
+            <form id="login-form" class="mb-3">
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">信箱：</label>
+                    <input type="email" id="login-email" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">密碼：</label>
+                    <input type="password" id="login-password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">登入</button>
+            </form>
+            <div id="login-message" class="text-danger"></div>
+        </section>
+
+        <!-- 歷史紀錄區 -->
+        <section id="history-section" class="d-none">
+            <h2>我的紀錄</h2>
+            <div id="history-list" class="list-group">
+                <!-- 歷史紀錄將在這裡顯示 -->
+            </div>
+        </section>
+
+        <!-- 首頁功能區 -->
+        <section id="home-section">
+            <h2>文字改寫系統</h2>
+            <form id="rewrite-form" class="mb-3">
+                <div class="mb-3">
+                    <label for="input-text" class="form-label">輸入文字：</label>
+                    <textarea id="input-text" rows="5" class="form-control" placeholder="請輸入文字..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="file-upload" class="form-label">或上傳檔案：</label>
+                    <input type="file" id="file-upload" class="form-control" accept=".txt,.docx">
+                </div>
+                <div class="mb-3">
+                    <label for="mode-select" class="form-label">選擇模式：</label>
+                    <select id="mode-select" class="form-select">
+                        <option value="grammar">文法修正</option>
+                        <option value="summary">摘要</option>
+                        <option value="rewrite">改寫</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">送出</button>
+            </form>
+            <div id="result-section" class="d-none">
+                <h3>改寫結果</h3>
+                <p><strong>原始文字：</strong></p>
+                <p id="original-text"></p>
+                <p><strong>改寫建議：</strong></p>
+                <p id="rewritten-text"></p>
+                <button id="accept-all-btn" class="btn btn-success">一鍵接受全部修改</button>
+                <button id="download-txt-btn" class="btn btn-secondary">下載為 TXT</button>
+                <button id="download-docx-btn" class="btn btn-secondary">下載為 DOCX</button>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2023 用戶管理系統</p>
+    </footer>
+    <!-- 引入 Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerBtn = document.getElementById('register-btn');
+            const loginBtn = document.getElementById('login-btn');
+            const historyBtn = document.getElementById('history-btn');
+            const homeBtn = document.getElementById('home-btn');
+
+            const registerSection = document.getElementById('register-section');
+            const loginSection = document.getElementById('login-section');
+            const historySection = document.getElementById('history-section');
+            const homeSection = document.getElementById('home-section');
+
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            const rewriteForm = document.getElementById('rewrite-form');
+            const resultSection = document.getElementById('result-section');
+            const originalText = document.getElementById('original-text');
+            const rewrittenText = document.getElementById('rewritten-text');
+
+            // Toggle sections
+            registerBtn.addEventListener('click', () => {
+                registerSection.classList.remove('d-none');
+                loginSection.classList.add('d-none');
+                historySection.classList.add('d-none');
+                homeSection.classList.add('d-none');
+            });
+
+            loginBtn.addEventListener('click', () => {
+                loginSection.classList.remove('d-none');
+                registerSection.classList.add('d-none');
+                historySection.classList.add('d-none');
+                homeSection.classList.add('d-none');
+            });
+
+            historyBtn.addEventListener('click', () => {
+                historySection.classList.remove('d-none');
+                registerSection.classList.add('d-none');
+                loginSection.classList.add('d-none');
+                homeSection.classList.add('d-none');
+            });
+
+            homeBtn.addEventListener('click', () => {
+                homeSection.classList.remove('d-none');
+                registerSection.classList.add('d-none');
+                loginSection.classList.add('d-none');
+                historySection.classList.add('d-none');
+            });
+
+            // Handle rewrite form submission
+            rewriteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const inputText = document.getElementById('input-text').value;
+                const mode = document.getElementById('mode-select').value;
+
+                // Simulate rewrite logic
+                originalText.textContent = inputText;
+                rewrittenText.textContent = `改寫結果 (${mode} 模式): ${inputText} [改寫後的內容]`;
+                resultSection.classList.remove('d-none');
+            });
+
+            // Handle file upload
+            document.getElementById('file-upload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        document.getElementById('input-text').value = event.target.result;
+                    };
+                    reader.readAsText(file);
+                }
+            });
+
+            // Accept all modifications
+            document.getElementById('accept-all-btn').addEventListener('click', () => {
+                alert('所有修改已接受！');
+            });
+
+            // Download as TXT
+            document.getElementById('download-txt-btn').addEventListener('click', () => {
+                const blob = new Blob([rewrittenText.textContent], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'rewritten_text.txt';
+                link.click();
+            });
+
+            // Download as DOCX
+            document.getElementById('download-docx-btn').addEventListener('click', () => {
+                alert('DOCX 下載功能尚未實作！');
+            });
+        });
+    </script>
+</body>
+</html>
